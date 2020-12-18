@@ -1,14 +1,17 @@
 package src.main;
 
+import src.common.IllegalGroupingSizeException;
+
 import java.util.Comparator;
 import java.util.ArrayList;
 
 public class GroupingAlgorithm {
-    // ''' <summary>
-    // ''' Takes in a Karnaugh map and returns the optimal groupings of it.
-    // ''' </summary>
-    // ''' <param name="kmap">A 2D arrarow of Boolean that represents the map</param>
-    // ''' <returns>A list of the groupings</returns>
+
+    /**
+     * Finds the simplest groupings for a Karnaugh map.
+     * @param kmap the Karnaugh map
+     * @return a minimal list of Grouping objects
+     */
     public static Iterable<Grouping> findOptimalGroupings(boolean[][] kmap) {
 
         // Step 1: set up Prefix Sum Matrix
@@ -30,10 +33,12 @@ public class GroupingAlgorithm {
                 for (int row1 = 0; row1 < kmap.length; row1++)
                     for (int col1 = 0; col1 < kmap[0].length; col1++) {
 
-                        if (col0 == col1 + 1 || row0 == row1 + 1) continue; //removes instances of unnecessarrow wrapping
+                        if (col0 == col1 + 1 || row0 == row1 + 1) continue; //removes instances of unnecessarry wrapping
 
-                        thisGroup = new Grouping(col0, row0, col1, row1, kmap[0].length, kmap.length);
-                        if (pS.sumRegion(row0, col0, row1, col1) == thisGroup.size() && thisGroup.isSquare()) AllGroups.insert(thisGroup);
+                        try {
+                            thisGroup = new Grouping(col0, row0, col1, row1, kmap[0].length, kmap.length);
+                            if (pS.sumRegion(row0, col0, row1, col1) == thisGroup.size()) AllGroups.insert(thisGroup);
+                        } catch (IllegalGroupingSizeException ignored) {}
                     }
 
         // Step 3: Remove groups until K-map is empty
@@ -67,46 +72,46 @@ public class GroupingAlgorithm {
 
         int row, col;
 
-        if (currentGroup.startCol <= currentGroup.endCol && currentGroup.startRow <= currentGroup.endRow)
-            for (col = currentGroup.startCol; col <= currentGroup.endCol; col++)
-                for (row = currentGroup.startRow; row <= currentGroup.endRow; row++)
+        if (currentGroup.getStartCol() <= currentGroup.getEndCol() && currentGroup.getStartRow() <= currentGroup.getEndRow())
+            for (col = currentGroup.getStartCol(); col <= currentGroup.getEndCol(); col++)
+                for (row = currentGroup.getStartRow(); row <= currentGroup.getEndRow(); row++)
                     kmap[row][col] = false;
 
-        if (currentGroup.startCol > currentGroup.endCol && currentGroup.startRow <= currentGroup.endRow)  {
-            for (col = 0; col <= currentGroup.endCol; col++)
-                for (row = currentGroup.startRow; row <= currentGroup.endRow; row++)
+        if (currentGroup.getStartCol() > currentGroup.getEndCol() && currentGroup.getStartRow() <= currentGroup.getEndRow())  {
+            for (col = 0; col <= currentGroup.getEndCol(); col++)
+                for (row = currentGroup.getStartRow(); row <= currentGroup.getEndRow(); row++)
                     kmap[row][col] = false;
 
-            for (col = currentGroup.startCol; col < currentGroup.mapWidth; col++)
-                for (row = currentGroup.startRow; row <= currentGroup.endRow; row++)
+            for (col = currentGroup.getStartCol(); col < currentGroup.dimension().width; col++)
+                for (row = currentGroup.getStartRow(); row <= currentGroup.getEndRow(); row++)
                     kmap[row][col] = false;
         }
 
-        if (currentGroup.startCol <= currentGroup.endCol && currentGroup.startRow > currentGroup.endRow) {
-            for (col = currentGroup.startCol; col <= currentGroup.endCol; col++)
-                for (row = 0; row <= currentGroup.endRow; row++)
+        if (currentGroup.getStartCol() <= currentGroup.getEndCol() && currentGroup.getStartRow() > currentGroup.getEndRow()) {
+            for (col = currentGroup.getStartCol(); col <= currentGroup.getEndCol(); col++)
+                for (row = 0; row <= currentGroup.getEndRow(); row++)
                     kmap[row][col] = false;
                     
-            for (col = currentGroup.startCol; col <= currentGroup.endCol; col++)
-                for (row = currentGroup.startRow; row < currentGroup.mapHeight; row++)
+            for (col = currentGroup.getStartCol(); col <= currentGroup.getEndCol(); col++)
+                for (row = currentGroup.getStartRow(); row < currentGroup.dimension().height; row++)
                     kmap[row][col] = false;
         }
 
-        if (currentGroup.startCol > currentGroup.endCol && currentGroup.startRow > currentGroup.endRow) {
-            for (col = 0; col <= currentGroup.endCol; col++)
-                for (row = 0; row <= currentGroup.endRow; row++)
+        if (currentGroup.getStartCol() > currentGroup.getEndCol() && currentGroup.getStartRow() > currentGroup.getEndRow()) {
+            for (col = 0; col <= currentGroup.getEndCol(); col++)
+                for (row = 0; row <= currentGroup.getEndRow(); row++)
                     kmap[row][col] = false;
                     
-            for (col = 0; col <= currentGroup.endCol; col++)
-                for (row = currentGroup.startRow; row < currentGroup.mapHeight; row++)
+            for (col = 0; col <= currentGroup.getEndCol(); col++)
+                for (row = currentGroup.getStartRow(); row < currentGroup.dimension().height; row++)
                     kmap[row][col] = false;
                     
-            for (col = currentGroup.startCol; col < currentGroup.mapWidth; col++)
-                for (row = 0; row <= currentGroup.endRow; row++)
+            for (col = currentGroup.getStartCol(); col < currentGroup.dimension().width; col++)
+                for (row = 0; row <= currentGroup.getEndRow(); row++)
                     kmap[row][col] = false;
                     
-            for (col = currentGroup.startCol; col < currentGroup.mapWidth; col++)
-                for (row = currentGroup.startRow; row < currentGroup.mapHeight; row++)
+            for (col = currentGroup.getStartCol(); col < currentGroup.dimension().width; col++)
+                for (row = currentGroup.getStartRow(); row < currentGroup.dimension().height; row++)
                     kmap[row][col] = false;            
         }
     }
@@ -115,7 +120,7 @@ public class GroupingAlgorithm {
         for (int i = 0; i < map.length; i++)
             for (int j = 0; j < map[0].length; j++)
                 if (map[i][j]) return false;
-        
+
         return true;
     }
 
@@ -128,7 +133,7 @@ public class GroupingAlgorithm {
     }
 
     private static class ByNumSquares implements Comparator<Grouping> {
-        private boolean[][] kmap;
+        private final boolean[][] kmap;
 
         public ByNumSquares(boolean[][] k)
             {kmap = k;}
