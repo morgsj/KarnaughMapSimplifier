@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"src.main","l":"Grouping"},{"p":"src.main","l":"GroupingAlgorithm"},{"p":"src.tests","l":"GroupingAlgorithmTest"},{"p":"src.common","l":"IllegalGroupingSizeException"}]

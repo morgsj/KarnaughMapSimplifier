@@ -9,9 +9,9 @@ import java.util.PriorityQueue;
 public class GroupingAlgorithm {
 
     /**
-     * Finds the simplest groupings for a Karnaugh map.
+     * Finds the simplest set of groupings for a Karnaugh map.
      * @param kmap the Karnaugh map
-     * @return a minimal list of Grouping objects
+     * @return A list of Grouping objects
      */
     public static Iterable<Grouping> findOptimalGroupings(boolean[][] kmap) {
 
@@ -74,6 +74,11 @@ public class GroupingAlgorithm {
         return FinalGroups;
     }
 
+    /**
+     * Finds the simplest set of groupings for a Karnaugh map.
+     * @param kmap the Karnaugh map
+     * @return A list of Grouping objects
+     */
     public static Iterable<Grouping> findOptimalGroupings(int[][] kmap) {
         return findOptimalGroupings(toBooleanArray(kmap));
     }

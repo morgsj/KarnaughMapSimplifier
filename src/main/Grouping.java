@@ -98,7 +98,7 @@ public class Grouping implements Comparable<Grouping> {
     public int mapSection(boolean[][] map) {
         if (map.length <= 0 || map[0].length <= 0) throw new IllegalArgumentException("Map is not of appropriate dimensions");
 
-        if (map.length <= startCol || map[0].length <= startRow) throw new IllegalArgumentException("Grouping goes outside argument map");
+        if (map.length <= startRow || map[0].length <= startCol) throw new IllegalArgumentException("Grouping goes outside argument map");
 
         int count = 0, col, row;
 
@@ -152,7 +152,11 @@ public class Grouping implements Comparable<Grouping> {
         return count;
     }
 
-    @Override
+    /**
+     * Determines if two groupings are the same.
+     * @param o the object to compare this grouping to
+     * @return True if the objects are equal
+     */
     public boolean equals(Object o) {
         if (o instanceof Grouping) {
             Grouping obj = (Grouping)o;
@@ -253,7 +257,10 @@ public class Grouping implements Comparable<Grouping> {
         return endRow;
     }
 
-    @Override
+    /**
+     * Generates a string representation of the Grouping.
+     * @return The string representation
+     */
     public String toString()
     {return "Grouping: (" + startCol + ", " + startRow + ") ~ (" + endCol + ", " + endRow + ")";}
 }
