@@ -16,15 +16,19 @@ import java.util.ArrayList;
  */
 public class Grouping implements Comparable<Grouping> {
 
-    private int startCol, endCol, startRow, endRow, mapWidth, mapHeight;
+    private final int startCol;
+    private final int endCol;
+    private final int startRow;
+    private final int endRow;
+    private final int mapWidth;
+    private final int mapHeight;
 
     /**
      * Initialises a new grouping
-     *
-     * @param startRow the y coordinate of the top edge of the group
-     * @param startCol the col coordinate of the left edge of the group
-     * @param endRow the y coordinate of the bottom edge of the group
-     * @param endCol the col coordinate of the right edge of the group
+     * @param startRow the row of the top edge of the group
+     * @param startCol the column of the left edge of the group
+     * @param endRow the row of the bottom edge of the group
+     * @param endCol the column of the right edge of the group
      * @param mapWidth the width of the Karnaugh Map
      * @param mapHeight the height of the Karnaugh Map
      */
@@ -101,48 +105,48 @@ public class Grouping implements Comparable<Grouping> {
         if (startCol <= endCol && startRow <= endRow)
             for (col = startCol; col <= endCol; col++)
                 for (row = startRow; row <= endRow; row++)
-                    if (map[col][row]) count++;
+                    if (map[row][col]) count++;
 
 
         // col overlap
         if (startCol > endCol && startRow <= endRow) {
             for (col = 0; col <= endCol; col++)
                 for (row = startRow; row <= endRow; row++)
-                    if (map[col][row]) count++;
+                    if (map[row][col]) count++;
 
             for (col = startCol; col <= mapWidth - 1; col++)
                 for (row = startRow; row <= endRow; row++)
-                    if (map[col][row] != false) count++;
+                    if (map[row][col] != false) count++;
         }
 
         // row overlap
         if (startCol <= endCol && startRow > endRow) {
             for (col = startCol; col <= endCol; col++)
                 for (row = 0; row <= endRow; row++)
-                    if (map[col][row] != false) count++;
+                    if (map[row][col] != false) count++;
 
             for (col = startCol; col <= endCol; col++)
                 for (row = startRow; row <= mapHeight - 1; row++)
-                    if (map[col][row] != false) count++;
+                    if (map[row][col] != false) count++;
         }
 
         // col and row overlap
         if (startCol > endCol && startRow > endRow) {
             for (col = 0; col <= endCol; col++)
                 for (row = 0; row <= endRow; row++)
-                    if (map[col][row])  count++;
+                    if (map[row][col])  count++;
 
             for (col = 0; col <= endCol; col++)
                 for (row = startRow; row <= mapHeight - 1; row++)
-                    if (map[col][row])  count++;
+                    if (map[row][col])  count++;
 
             for (col = startCol; col <= mapWidth - 1; col++)
                 for (row = 0; row <= endRow; row++)
-                    if (map[col][row])  count++;
+                    if (map[row][col])  count++;
 
             for (col = startCol; col <= mapWidth - 1; col++)
                 for (row = startRow; row <= mapHeight - 1; row++)
-                    if (map[col][row])  count++;
+                    if (map[row][col])  count++;
         }
 
         return count;
