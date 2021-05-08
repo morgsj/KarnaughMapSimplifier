@@ -6,11 +6,11 @@ A simple algorithm that produces the optimal groupings for a Karnaugh map, which
 
 See javadoc for full usage. Once all the classes are imported, one may call
 ```
-GroupingAlgorithm.findOptimalGroupings()
+GroupingAlgorithm.findOptimalGroupings(kmap)
 ```
 with either a boolean array or integer array, returning an iterable list of Grouping objects.
 
-## Method
+## Algorithm Method
 
 1. A prefix sum matrix is constructed for the Karnaugh map. This is purely for efficiency as it allows sums of regions of the Karnaugh map to occur in constant time.
 
